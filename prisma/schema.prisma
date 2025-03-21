@@ -15,11 +15,14 @@ datasource db {
 
 model Todo {
   id Int @id @default(autoincrement())
+  user_id Int
   title String @db.VarChar(100)
   description String?
   status Boolean @default(false)
   created_at DateTime @default(now())
   updated_at DateTime  @updatedAt
+
+  user User @relation(fields: [user_id],references: [id])
 
   @@map("todos")
 }
@@ -31,6 +34,7 @@ model User {
   password String @db.VarChar(100)
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
+  todos Todo[] //always plural
 
   @@map("users")
 
