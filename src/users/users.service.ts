@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, User } from '@prisma/client';
 import { hash } from 'bcrypt';
 
 @Injectable()
@@ -64,7 +64,17 @@ export class UsersService {
         throw new BadRequestException('This email is already registered');
       }
     }
-
+    if (updateUserDto.mobile) {
+      user = await this.prisma.user.findUnique({
+        where: { mobile: updateUserDto.mobile },
+      });
+      if (user && user.id! == id) {
+        throw new BadRequestException('This mobile is already registered');
+      }
+    }
+    if (updateUserDto.password) {
+      updateUserDto.password = await hash(updateUserDto.password, 10);
+    }
     return this.prisma.user.update({
       where: { id },
       data: updateUserDto,
