@@ -1,7 +1,12 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { PrismaClient } from '@prisma/client';
+import { hash } from 'bcrypt';
 
 @Injectable()
 export class UsersService {
@@ -9,9 +14,24 @@ export class UsersService {
   constructor(private readonly prisma: PrismaClient) {}
 
   async create(createUserDto: CreateUserDto) {
-    return this.prisma.user.create({
-      data: createUserDto,
+    let user = await this.prisma.user.findUnique({
+      where: {
+        email: createUserDto.email,
+      },
     });
+    if (user) {
+      throw new BadRequestException('This email is already registered');
+    }
+    user = await this.prisma.user.findUnique({
+      where: {
+        mobile: createUserDto.mobile,
+      },
+    });
+    if (user) {
+      throw new BadRequestException('This mobile is already registered');
+    }
+
+    createUserDto.password = await hash(createUserDto.password, 10);
   }
 
   async findAll() {

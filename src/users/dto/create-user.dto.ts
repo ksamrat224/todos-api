@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsNotEmpty, IsString, MaxLength, MinLength } from 'class-validator';
 
 export class CreateUserDto {
   @IsNotEmpty()
@@ -11,6 +11,8 @@ export class CreateUserDto {
 
   @IsNotEmpty()
   @IsString()
+  @MinLength(7)
+  @MaxLength(15)
   mobile: string;
 
   @IsNotEmpty()
