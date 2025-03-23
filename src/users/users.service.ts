@@ -32,6 +32,9 @@ export class UsersService {
     }
 
     createUserDto.password = await hash(createUserDto.password, 10);
+    return this.prisma.user.create({
+      data: createUserDto,
+    });
   }
 
   async findAll() {
