@@ -52,7 +52,19 @@ export class UsersService {
   }
 
   async update(id: number, updateUserDto: UpdateUserDto) {
+    let user: User | null;
     await this.findOne(id);
+
+    if (updateUserDto.email) {
+      user = await this.prisma.user.findUnique({
+        where: { email: updateUserDto.email },
+      });
+
+      if (user && user.id! == id) {
+        throw new BadRequestException('This email is already registered');
+      }
+    }
+
     return this.prisma.user.update({
       where: { id },
       data: updateUserDto,
