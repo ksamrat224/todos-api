@@ -52,7 +52,7 @@ export class UsersService {
   }
 
   async update(id: number, updateUserDto: UpdateUserDto) {
-    let user: User | null;
+    let user: User | null; //declaration
     await this.findOne(id);
 
     if (updateUserDto.email) {
@@ -60,7 +60,7 @@ export class UsersService {
         where: { email: updateUserDto.email },
       });
 
-      if (user && user.id! == id) {
+      if (user && user.id !== id) {
         throw new BadRequestException('This email is already registered');
       }
     }
@@ -68,7 +68,7 @@ export class UsersService {
       user = await this.prisma.user.findUnique({
         where: { mobile: updateUserDto.mobile },
       });
-      if (user && user.id! == id) {
+      if (user && user.id !== id) {
         throw new BadRequestException('This mobile is already registered');
       }
     }
