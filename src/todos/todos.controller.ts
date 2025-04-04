@@ -6,18 +6,20 @@ import {
   Patch,
   Param,
   Delete,
-  UseGuards,
+  Req,
 } from '@nestjs/common';
 import { TodosService } from './todos.service';
 import { CreateTodoDto, CreateTodoManyDto } from './dto/create-todo.dto';
 import { UpdateTodoDto } from './dto/update-todo.dto';
 import { AuthGuard } from 'src/guards/auth/auth.guard';
+import { Payload } from 'src/interfaces/payload';
 @Controller('todos')
 export class TodosController {
   constructor(private readonly todosService: TodosService) {}
 
   @Post()
-  create(@Body() createTodoDto: CreateTodoDto) {
+  create(@Body() createTodoDto: CreateTodoDto, @Req() req: Payload) {
+    createTodoDto.user_id = req.User.id;
     return this.todosService.create(createTodoDto);
   }
 
@@ -27,8 +29,8 @@ export class TodosController {
   }
 
   @Get()
-  findAll() {
-    return this.todosService.findAll();
+  findAll(@Req() req: Payload) {
+    return this.todosService.findAll(req.User.id);
   }
 
   @Get(':id')
