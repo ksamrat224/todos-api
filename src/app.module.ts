@@ -5,6 +5,8 @@ import { TodosModule } from './todos/todos.module';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { MailerModule } from '@nestjs-modules/mailer';
+import { PrismaClient } from '@prisma/client';
+import { UsersService } from './users/users.service';
 
 @Module({
   imports: [
@@ -23,6 +25,6 @@ import { MailerModule } from '@nestjs-modules/mailer';
     }),
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, PrismaClient, UsersService],
 })
 export class AppModule {}
