@@ -5,8 +5,7 @@ import { TodosModule } from './todos/todos.module';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { MailerModule } from '@nestjs-modules/mailer';
-import { PrismaClient } from '@prisma/client';
-import { UsersService } from './users/users.service';
+import { BullModule } from '@nestjs/bull';
 
 @Module({
   imports: [
@@ -23,8 +22,14 @@ import { UsersService } from './users/users.service';
         },
       },
     }),
+    BullModule.forRoot({
+      redis: {
+        host: process.env.REDIS_HOST!,
+        port: parseInt(process.env.REDIS_PORT!),
+      },
+    }),
   ],
   controllers: [AppController],
-  providers: [AppService, PrismaClient, UsersService],
+  providers: [AppService],
 })
 export class AppModule {}
