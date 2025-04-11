@@ -23,6 +23,7 @@ export class AuthService {
   ) {}
   async register(registerDto: RegisterDto) {
     const user = await this.usersService.create(registerDto);
+    //for queuing mail
     await this.queue.add('verifyEmailAddress', {
       from: 'info@todoapp.com ',
       to: 'user.email',
