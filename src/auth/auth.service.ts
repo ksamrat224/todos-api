@@ -24,8 +24,8 @@ export class AuthService {
   async register(registerDto: RegisterDto) {
     const user = await this.usersService.create(registerDto);
     await this.queue.add('verifyEmailAddress', {
-      from: 'test@example.com ',
-      to: 'test@test.com',
+      from: 'info@todoapp.com ',
+      to: 'user.email',
       otp: 123456,
     });
     const token = await this.jwtService.signAsync(user);
